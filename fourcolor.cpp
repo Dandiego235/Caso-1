@@ -15,7 +15,7 @@ struct region{
 int main(){
     int length = sizeof mapa / sizeof mapa[0];
 
-    /*
+    
     string entrada;
     for (int i = 0; i < length; i++){
         cout << "Ingrese las adyacencias de la region " << i << ": " << endl;
@@ -29,8 +29,9 @@ int main(){
                 cout << number << " " << typeid(number).name() << endl;
             }
         }
-    }*/
+    }
     
+    /*
     mapa[0].adyacentes = {1, 2};
     mapa[1].adyacentes = {0, 2, 3};
     mapa[2].adyacentes = {0, 1, 3, 4, 5};
@@ -40,7 +41,7 @@ int main(){
     mapa[6].adyacentes = {4, 5, 7, 8, 9};
     mapa[7].adyacentes = {5, 6, 8};
     mapa[8].adyacentes = {7, 6, 9};
-    mapa[9].adyacentes = {4, 6, 8};
+    mapa[9].adyacentes = {4, 6, 8};*/
 
     list<int> colores;
 
