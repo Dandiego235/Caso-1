@@ -8,87 +8,101 @@
 
 using namespace std;
 
-struct region{
-    int color = 0;
-    vector<int> adyacentes;
-} mapa[10];
+struct region{ // estructura de datos para cada region del mapa
+    int color = 0; // Color default. Se van a pintar con colores 1, 2, 3 y 4.
+
+    vector<int> adyacentes; // Vector donde se almacenan los índices de las regiones adyacentes.
+
+} mapa[10]; // Aquí se inicializa la cantidad de regiones del mapa. Cada índice va a representar a una región diferente.
 
 int main(){
-    int length = sizeof mapa / sizeof mapa[0];
-    
-    vector<int> sizeOrder;
+    int length = sizeof mapa / sizeof mapa[0]; // tamaño del array del mapa
 
-    /*
-    string entrada;
+    string entrada; 
     for (int i = 0; i < length; i++){
         cout << "Ingrese las adyacencias de la region " << i << ": " << endl;
-        while (getline(cin, entrada)){
-            if (entrada == "")
+        while (getline(cin, entrada)){ // se leen las adyacencias de la región.
+            if (entrada == "") // Si se ingresa un string vacío, continúa con la siguiente región adyacente.
                 break;
             int number;
             stringstream ss(entrada);
             while (ss >> number){
                 mapa[i].adyacentes.push_back(number);
-                cout << number << " " << typeid(number).name() << endl;
             }
         }
-    }*/
+    }
 
-    
-    mapa[0].adyacentes = {1,2,3,4,5,6};
-    mapa[1].adyacentes = {0,2,7,6};
-    mapa[2].adyacentes = {0,3,8,7,1};
-    mapa[3].adyacentes = {0,2,8,4};
-    mapa[4].adyacentes = {8,9,3,0,5};
-    mapa[5].adyacentes = {0,4,6,9};
-    mapa[6].adyacentes = {0,1,7,9,5};
-    mapa[7].adyacentes = {6,1,2,8,9};
-    mapa[8].adyacentes = {2,3,4,9,7};
-    mapa[9].adyacentes = {4,5,6,7,8};
+    vector<int> sizeOrder; // vector donde se van almacenar el orden descendente de las regiones de acuerdo con su cantidad de adyacencias.
 
+    // se van a ordernar las regiones en orden descendente de acuerdo con la cantidad de regiones adyacentes.
     for (int i = 0; i < length; i++) {
-        cout << "i: " << i <<  endl;
-        if (sizeOrder.size() == 0){
+        if (sizeOrder.size() == 0){ // si el vector está vacío, se agrega la región al vector.
             sizeOrder.emplace_back(i);
             continue;
         }
-        for (int j = 0; j < sizeOrder.size(); j++){
-            cout << "j " << j << " " << mapa[sizeOrder[j]].adyacentes.size() << " i " << i << " " << mapa[i].adyacentes.size() << endl;
+        
+        for (int j = 0; j < sizeOrder.size(); j++){ // se recorre el vector de sizeOrder para ir agregando las otras regiones.
             if (mapa[sizeOrder[j]].adyacentes.size() < mapa[i].adyacentes.size()){
                 sizeOrder.emplace(sizeOrder.begin() + j, i);
                 break;
+                /* si encuentra que en algún punto, la cantidad de regiones adyacentes de un elemento en sizeOrder
+                es menor la cantidad de regiones adyacentes de la región del mapa que se está revisando,
+                agrega esta región en la posición donde encontró la región menor. Así, queda en orden descendiente.*/
             } else if (j == sizeOrder.size() - 1) {
                 sizeOrder.push_back(i);
-                cout << "placed back" << endl;
                 break;
+                /* Sí recorrió el vector y llega al último elemento y no ha encontrado una región con una cantidad de adyacencias menor
+                   agrega la región al final del vector. */
             }
         }
-        cout << sizeOrder.size() << endl;
     }
+
+    list<int> colores; // lista donde se almacenan los colores.
+
+    /* Se va a recorrer por el array del mapa en el orden descendiente que estipula
+    sizeOrder, para que se le vayan asignando colores primero a las regiones con mayor cantidad de regiones adyacentes.
+    Se priorizan estas regiones. 
     
-    for (int j = 0; j < sizeOrder.size(); j++){
-        cout << sizeOrder[j] << "? "<< endl;
-    }
+    Se le asigna un color a una región revisando los colores de sus regiones adyacentes,
+    eliminando los colores repetidos de la lista de colores, y finalmente escogiendo el primer color disponible tras eliminar los que ya
+    se han utilizado. */
+    for (int i = 0; i < sizeOrder.size(); i++){ // se recorre sizeOrder porque este nos va a dar el orden de las regiones a colorear.
+        colores = {1, 2, 3, 4}; // se restauran los colores disponibles.
 
+        for (int j = 0; j < mapa[sizeOrder[i]].adyacentes.size(); j++){ // Se recorre el vector que contiene las regiones adyacentes.
 
-    list<int> colores;
+            int adyacente = mapa[sizeOrder[i]].adyacentes.at(j); // Se almacena el número de la región adyacente en esta variable.
 
-    for (int i = 0; i < sizeOrder.size(); i++){
-        colores = {1, 2, 3, 4};
-
-        cout << sizeOrder[i] << "!" << endl;
-        for (int j = 0; j < mapa[sizeOrder[i]].adyacentes.size(); j++){
-            int adyacente = mapa[sizeOrder[i]].adyacentes.at(j);
-            cout << "Adyacente: " << adyacente << " color de adyacente " << mapa[adyacente].color << endl;
-            colores.remove(mapa[adyacente].color);
+            colores.remove(mapa[adyacente].color); // Se elimina el color de la región adyacente de la lista de colores disponibles.
             }
-        auto iterador = colores.begin();
-        mapa[sizeOrder[i]].color = *iterador;
-        cout << "Color de " << sizeOrder[i] << " es " << mapa[sizeOrder[i]].color << endl;
+        auto iterador = colores.begin(); // se crea este puntero para acceder al primer elemento de la lista de colores.
+
+        mapa[sizeOrder[i]].color = *iterador; // Se le asigna el color a la región.
     }
 
+    // Se imprimen las regions con cada color.
+    cout << "Regiones con color 1" << endl;
     for (int i = 0; i < length; i++) {
-        cout << "Color de region " << i << " es " << mapa[i].color << endl;
+        if (mapa[i].color == 1){
+            cout << i << ", ";
+        }
     }
-
+    cout << "\nRegiones con color 2" << endl;
+    for (int i = 0; i < length; i++) {
+        if (mapa[i].color == 2){
+            cout << i << ", ";
+        }
+    }
+    cout << "\nRegiones con color 3" << endl;
+    for (int i = 0; i < length; i++) {
+        if (mapa[i].color == 3){
+            cout << i << ", ";
+        }
+    }
+    cout << "\nRegiones con color 4" << endl;
+    for (int i = 0; i < length; i++) {
+        if (mapa[i].color == 4){
+            cout << i << ", ";
+        }
+    }
 }
