@@ -110,7 +110,7 @@ Regiones con color 3
 Regiones con color 4
 3, 9,
 ```
-![Ejemplo de arriba:](/assets/images/fourcolorejemplo.png)
+![Ejemplo de arriba:](fourcolorejemplo.png)
 El algoritmo funciona de la siguiente manera:
 1. Lee las adyacencias de cada región.
 2. Ordena las regiones en un orden descendente de acuerdo con la cantidad de regiones adyacentes que tienen.
