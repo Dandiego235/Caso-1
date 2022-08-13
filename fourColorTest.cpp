@@ -5,6 +5,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <algorithm>
 
 using namespace std;
 
@@ -18,8 +19,8 @@ int main(){
     
     vector<int> sizeOrder;
 
-    /*
-    string entrada;
+    
+    /*string entrada;
     for (int i = 0; i < length; i++){
         cout << "Ingrese las adyacencias de la region " << i << ": " << endl;
         while (getline(cin, entrada)){
@@ -28,6 +29,14 @@ int main(){
             int number;
             stringstream ss(entrada);
             while (ss >> number){
+                if (number == i){
+                    cout << "La región " << i << " no puede ser adyacente consigo misma." << endl;
+                    return 0;
+                }
+                if (number >= length) {
+                    cout << "La región ingresada no es posible." << endl;
+                    return 0;
+                }
                 mapa[i].adyacentes.push_back(number);
                 cout << number << " " << typeid(number).name() << endl;
             }
@@ -42,13 +51,13 @@ int main(){
     mapa[4].adyacentes = {3,6,7};
     mapa[5].adyacentes = {2,3,8};
     mapa[6].adyacentes = {1,3,4,7,9,13,12,18};
-    mapa[7].adyacentes = {3,4,5,6,8,10};
+    mapa[7].adyacentes = {3,4,6,8,10};
     mapa[8].adyacentes = {5,3,7,11,17,23};
-    mapa[9].adyacentes = {6,14,15,10};
+    mapa[9].adyacentes = {6,14,10};
     mapa[10].adyacentes = {7,9,11,15};
     mapa[11].adyacentes = {8,10,16};
     mapa[12].adyacentes = {6,13,19,18};
-    mapa[13].adyacentes = {6,12,14,19};
+    mapa[13].adyacentes = {6,12,14,19,20,21};
     mapa[14].adyacentes = {9,15,13,21};
     mapa[15].adyacentes = {10,14,21,16};
     mapa[16].adyacentes = {15,11,17,23,21,22};
@@ -65,7 +74,7 @@ int main(){
     mapa[27].adyacentes = {18,28,30};
     mapa[28].adyacentes = {27,25,29};
     mapa[29].adyacentes = {26,28,30};
-    mapa[30].adyacentes = {29,27,19,20,21,31,0,32};
+    mapa[30].adyacentes = {29,27,19,20,21,31,0,33};
     mapa[31].adyacentes = {21,30,0};
     mapa[32].adyacentes = {22,0};
     mapa[33].adyacentes = {30,0};
@@ -103,11 +112,21 @@ int main(){
         cout << sizeOrder[i] << "!" << endl;
         for (int j = 0; j < mapa[sizeOrder[i]].adyacentes.size(); j++){
             int adyacente = mapa[sizeOrder[i]].adyacentes.at(j);
+            if (find(mapa[adyacente].adyacentes.begin(), mapa[adyacente].adyacentes.end(), sizeOrder[i]) == mapa[adyacente].adyacentes.end()){
+                cout << sizeOrder[i] << " y " << adyacente << " no son recíprocamente adyacentes, por lo que el mapa está erróneo." << endl;
+                return 0;
+            }
             cout << "Adyacente: " << adyacente << " color de adyacente " << mapa[adyacente].color << endl;
             colores.remove(mapa[adyacente].color);
             }
         auto iterador = colores.begin();
         mapa[sizeOrder[i]].color = *iterador;
+        if (mapa[sizeOrder[i]].color == 0){
+            // si una región quedó con el color 0, es que no se le pudo asignar un color y no se cumplió el teorema, por lo que el mapa
+            // debe estar erróneo.
+            cout << "A la región " << sizeOrder[i] << " no se le pudo asignar un color. El mapa está erróneo." << endl;
+            return 0;
+        }
         cout << "Color de " << sizeOrder[i] << " es " << mapa[sizeOrder[i]].color << endl;
     }
 
